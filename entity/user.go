@@ -36,10 +36,6 @@ type UpdatePasswordRequest struct {
 	ConfirmPassword		string 		`json:"confirm_password"`
 }
 
-type Paging struct {
-	Next	bool	`json:"next"`
-	Cursor	int		`json:"cursor"`
-}
 
 type UserData struct {
 	Username    string 		`json:"username"`
@@ -51,8 +47,4 @@ type UserData struct {
 	CreatedAt   time.Time	`json:"created_at"`
 }
 
-type UserResponse struct {
-	Data 	interface{}		`json:"data"`
-	Paging	Paging			`json:"paging"`	
-}
 

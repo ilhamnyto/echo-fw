@@ -25,6 +25,11 @@ func main() {
 	userController := controller.NewUserController(userService)
 	routes.UserRouter(e, userController)
 
+	postRepository := repositories.NewPostRepository(db.DbSQL)
+	postService := services.NewPostService(postRepository)
+	postController := controller.NewPostController(postService)
+	routes.PostRoutes(e, *postController)
+
 
 	e.Logger.Fatal(e.Start(os.Getenv("HOST") + ":" + os.Getenv("PORT")))
 	
