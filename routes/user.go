@@ -6,5 +6,11 @@ import (
 )
 
 func UserRouter(e *echo.Echo, c *controller.UserController) {
-	e.GET("/", c.Hello)
+	var (
+		authGroup = e.Group("/api/v1/auth")
+		usersGroup = e.Group("/api/v1/users")
+	)
+
+	authGroup.POST("/register", c.CreateUser)
+	usersGroup.GET("/", c.CreateUser)
 }

@@ -12,25 +12,38 @@ type CustomError struct {
 var (
 	generalError = CustomError{
 		Code:       "GENERAL_ERROR",
-		StatusCode: http.StatusInternalServerError,
 		Message: "INTERNAL SERVER ERROR",
+		StatusCode: http.StatusInternalServerError,
 	}
 
 	repositoryError = CustomError{
 		Code: "REPOSITORY_ERROR",
-		StatusCode: http.StatusInternalServerError,
 		Message: "REPOSITORY ERROR",
+		StatusCode: http.StatusInternalServerError,
 	}
 
 	notFoundError = CustomError{
 		Code: "NOT_FOUND_ERROR",
-		StatusCode: http.StatusNotFound,
 		Message: "NOT FOUND",
+		StatusCode: http.StatusNotFound,
 	}
 
 	unauthorizedError = CustomError{
 		Code: "NOT_AUTHORIZED",
+		Message: "NOT AUTHORIZED REQUEST",
 		StatusCode: http.StatusUnauthorized,
+	}
+
+	alreadyExistError = CustomError{
+		Code: "ALREADY_EXIST",
+		Message: "ALREADY EXIST DATA",
+		StatusCode: http.StatusConflict,
+	}
+
+	badRequestError = CustomError{
+		Code: "BAD_REQUEST",
+		Message: "BAD REQUEST",
+		StatusCode: http.StatusBadRequest,
 	}
 )
 
@@ -67,13 +80,35 @@ func NotFoundErrorWithAdditionalInfo(info interface{}) *CustomError {
 	return &err
 }
 
-func Unauthorized() *CustomError {
+func UnauthorizedError() *CustomError {
 	err := unauthorizedError
 	return &err
 }
 
-func UnauthorizedWithAdditionalInfo(info interface{}) *CustomError {
+func UnauthorizedErrorWithAdditionalInfo(info interface{}) *CustomError {
 	err := unauthorizedError
+	err.AdditionalInfo = info
+	return &err
+}
+
+func AlreadyExistError() *CustomError {
+	err := alreadyExistError
+	return &err
+}
+
+func AlreadyExistErrorWithAdditionalInfo(info interface{}) *CustomError {
+	err := alreadyExistError
+	err.AdditionalInfo = info
+	return &err
+}
+
+func BadRequestError() *CustomError {
+	err := badRequestError
+	return &err
+}
+
+func BadRequestErrorWithAdditionalInfo(info interface{}) *CustomError {
+	err := badRequestError
 	err.AdditionalInfo = info
 	return &err
 }

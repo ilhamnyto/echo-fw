@@ -28,7 +28,6 @@ type UpdateUserRequest struct {
 	LastName    string 		`json:"last_name"`
 	PhoneNumber string 		`json:"phone_number"`
 	Location    string 		`json:"location"`
-	UpdatedAt	time.Time	`json:"updated_at"`
 }
 
 type UpdatePasswordRequest struct {
