@@ -22,6 +22,11 @@ type CreateUserRequest struct {
 	Password	string		`json:"password"`
 }
 
+type UserLoginRequest struct {
+	Username 	string		`json:"username"`
+	Password 	string		`json:"password"`
+}
+
 
 type UpdateUserRequest struct {
 	FirstName 	string		`json:"first_name"`
@@ -46,4 +51,17 @@ type UserData struct {
 	CreatedAt   time.Time	`json:"created_at"`
 }
 
+func (u *UserData) ParseEntityToResponse(e *User) {
+	u.Username = e.Username
+	u.Email = e.Email
+	u.FirstName = e.FirstName
+	u.LastName = e.LastName
+	u.PhoneNumber = e.PhoneNumber
+	u.Location = e.Location
+	u.CreatedAt = e.CreatedAt
+}
+
+type UserLoginResponseData struct {
+	Token		string		`json:"token"`
+}
 

@@ -12,5 +12,7 @@ func UserRouter(e *echo.Echo, c *controller.UserController) {
 	)
 
 	authGroup.POST("/register", c.CreateUser)
-	usersGroup.GET("/", c.CreateUser)
+	authGroup.POST("/login", c.Login)
+	usersGroup.GET("", c.GetAllUser)
+	usersGroup.GET("/:username", c.GetUserByUsername)
 }
