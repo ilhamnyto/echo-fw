@@ -15,4 +15,8 @@ func UserRouter(e *echo.Echo, c *controller.UserController) {
 	authGroup.POST("/login", c.Login)
 	usersGroup.GET("", c.GetAllUser)
 	usersGroup.GET("/:username", c.GetUserByUsername)
+	usersGroup.GET("/search", c.SearchUser)
+	usersGroup.GET("/me", c.UserProfile)
+	usersGroup.PUT("/profile/update", c.UpdateProfile)
+	usersGroup.PUT("/profile/update_password", c.UpdatePassword)
 }
