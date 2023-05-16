@@ -9,6 +9,13 @@ type Post struct {
 	DeletedAt time.Time		`json:"deleted_at"`
 }
 
+type UserPost struct {
+	PostID 		int			`json:"post_id"`
+	Username	string		`json:"username"`
+	Body 		string		`json:"body"`
+
+}
+
 type CreatePostRequest struct {
 	UserID		int 		`json:"user_id"`
 	Body		string		`json:"body"`
