@@ -1,11 +1,11 @@
 package entity
 
 type Paging struct {
-	Next	bool	`json:"next"`
-	Cursor	int		`json:"cursor"`
+	Next	bool		`json:"next"`
+	Cursor	string		`json:"cursor"`
 }
 
 type DataResponse struct {
-	Data 	interface{}		`json:"data"`
-	Paging	Paging			`json:"paging"`	
+	Data   interface{} `json:"data"`
+    Paging interface{} `json:"paging,omitempty"`
 }
