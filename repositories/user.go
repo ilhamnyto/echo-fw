@@ -124,7 +124,6 @@ func (r *UserRepository) GetAllUser(cursor *time.Time) ([]*entity.User, error) {
 
 	queryGetAllUser += " order by created_at desc limit 6"
 
-
 	stmt, err := r.db.Prepare(queryGetAllUser)
 
 	if err != nil {
