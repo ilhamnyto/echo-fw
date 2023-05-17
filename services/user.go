@@ -113,7 +113,7 @@ func (s *UserService) GetAllUser(cursor string) ([]*entity.UserData, *entity.Pag
 			return nil, nil, entity.GeneralErrorWithAdditionalInfo(err.Error())
 		}
 		timestamp := int64(cursorInt)
-		t = time.Unix(timestamp, 0)
+		t = time.Unix(timestamp, 0).UTC()
 		users, err = s.repo.GetAllUser(&t)
 	}else{
 		users, err = s.repo.GetAllUser(nil)
@@ -147,7 +147,6 @@ func (s *UserService) GetAllUser(cursor string) ([]*entity.UserData, *entity.Pag
 
 
 	paging := entity.Paging{}
-
 	if len(users) == 6 {
 		paging.Next = true
 		paging.Cursor = strconv.Itoa(int(usersData[len(usersData)-1].CreatedAt.Unix()))
@@ -189,7 +188,7 @@ func (s *UserService) SearchUserByUsernameOrEmail(query string, cursor string) (
 			return nil, nil, entity.GeneralErrorWithAdditionalInfo(err.Error())
 		}
 		timestamp := int64(cursorInt)
-		t = time.Unix(timestamp, 0)
+		t = time.Unix(timestamp, 0).UTC()
 		users, err = s.repo.GetUserBySimalarUsernameOrEmail(query, &t)
 	}else{
 		users, err = s.repo.GetUserBySimalarUsernameOrEmail(query, nil)

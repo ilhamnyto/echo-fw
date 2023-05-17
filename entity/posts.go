@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"encoding/base64"
+	"time"
+)
 
 type Post struct {
 	UserID    int    		`json:"post_id"`
@@ -10,11 +13,12 @@ type Post struct {
 }
 
 type UserPost struct {
-	PostID 		int			`json:"post_id"`
+	PostID 		string		`json:"post_id"`
 	Username	string		`json:"username"`
 	Body 		string		`json:"body"`
-
+	CreatedAt	time.Time	`json:"created_at"`
 }
+
 
 type CreatePostRequest struct {
 	UserID		int 		`json:"user_id"`
@@ -27,4 +31,11 @@ type PostData struct {
 	Username	string 		`json:"username"`
 	Body 		string		`json:"body"`
 	CreatedAt	time.Time	`json:"created_at"`
+}
+
+func (p *PostData) ParseEntityToResponse(u *UserPost) {
+	p.PostID = base64.StdEncoding.EncodeToString([]byte(u.Username+":"+u.PostID))
+	p.Username = u.Username
+	p.Body = u.Body
+	p.CreatedAt = u.CreatedAt
 }
