@@ -2,11 +2,12 @@ package routes
 
 import (
 	"github.com/ilhamnyto/echo-fw/controller"
+	"github.com/ilhamnyto/echo-fw/middleware"
 	"github.com/labstack/echo/v4"
 )
 
 func PostRoutes(e *echo.Echo, c controller.PostController) {
-	postsGroup := e.Group("/api/v1/posts")
+	postsGroup := e.Group("/api/v1/posts", middleware.ValidateAuth)
 	postsGroup.GET("", c.GetAllPost)
 	postsGroup.POST("/create", c.CreatePost)
 	postsGroup.GET("/:postid", c.GetPost)

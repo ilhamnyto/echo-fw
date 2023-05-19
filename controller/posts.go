@@ -88,8 +88,9 @@ func (p *PostController) SearchPost(c echo.Context) error {
 
 func (p *PostController) MyPost(c echo.Context) error {
 	cursor := c.QueryParam("cursor")
+	userId := c.Get("user_id").(int)
 
-	posts, paging, custErr := p.service.GetMyPost(2, cursor)
+	posts, paging, custErr := p.service.GetMyPost(userId, cursor)
 
 		if custErr != nil {
 			return c.JSON(custErr.StatusCode, custErr)
