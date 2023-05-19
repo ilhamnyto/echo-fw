@@ -90,7 +90,8 @@ func (u *UserController) SearchUser(c echo.Context) error {
 }
 
 func (u *UserController) UserProfile(c echo.Context) error {
-	userData, custErr := u.service.GetProfile(1)
+	userId := c.Get("user_id").(int)
+	userData, custErr := u.service.GetProfile(userId)
 
 	if custErr != nil {
 		return c.JSON(custErr.StatusCode, custErr)
@@ -103,12 +104,13 @@ func (u *UserController) UserProfile(c echo.Context) error {
 
 func (u *UserController) UpdateProfile(c echo.Context) error {
 	req := entity.UpdateUserRequest{}
+	userId := c.Get("user_id").(int)
 
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
 
-	if custErr := u.service.UpdateUserProfile(&req, 1); custErr != nil {
+	if custErr := u.service.UpdateUserProfile(&req, userId); custErr != nil {
 		return c.JSON(custErr.StatusCode, custErr)
 	}
 
@@ -119,12 +121,13 @@ func (u *UserController) UpdateProfile(c echo.Context) error {
 
 func (u *UserController) UpdatePassword(c echo.Context) error {
 	req := entity.UpdatePasswordRequest{}
+	userId := c.Get("user_id").(int)
 
 	if err := c.Bind(&req); err != nil {
 		return err
 	}
 
-	if custErr := u.service.UpdateUserPassword(&req, 1); custErr != nil {
+	if custErr := u.service.UpdateUserPassword(&req, userId); custErr != nil {
 		return c.JSON(custErr.StatusCode, custErr)
 	}
 
