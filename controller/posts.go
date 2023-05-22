@@ -1,6 +1,11 @@
 package controller
 
 import (
+	"encoding/json"
+	"fmt"
+	"time"
+
+	"github.com/go-redis/redis/v8"
 	"github.com/ilhamnyto/echo-fw/entity"
 	"github.com/ilhamnyto/echo-fw/services"
 	"github.com/labstack/echo/v4"
@@ -8,10 +13,11 @@ import (
 
 type PostController struct {
 	service services.InterfacePostService
+	cache *redis.Client
 }
 
-func NewPostController(service services.InterfacePostService) *PostController {
-	return &PostController{service: service}
+func NewPostController(service services.InterfacePostService, redis *redis.Client) *PostController {
+	return &PostController{service: service, cache: redis}
 }
 
 func (p *PostController) CreatePost(c echo.Context) error {
@@ -90,13 +96,40 @@ func (p *PostController) MyPost(c echo.Context) error {
 	cursor := c.QueryParam("cursor")
 	userId := c.Get("user_id").(int)
 
-	posts, paging, custErr := p.service.GetMyPost(userId, cursor)
+	result, err := p.cache.Get(c.Request().Context(), fmt.Sprint(userId)+":"+cursor).Result()
 
-		if custErr != nil {
-			return c.JSON(custErr.StatusCode, custErr)
+	if err == nil {
+		var dr entity.DataResponse
+
+		err := json.Unmarshal([]byte(result), &dr)
+
+		if err != nil {
+			return c.JSON(500, err.Error())
 		}
 
-		resp := entity.DataResponse{Data: posts, Paging: paging}
+		return c.JSON(200, dr)
+	}
 
-		return c.JSON(200, resp)
+
+	posts, paging, custErr := p.service.GetMyPost(userId, cursor)
+
+	if custErr != nil {
+		return c.JSON(custErr.StatusCode, custErr)
+	}
+
+	resp := entity.DataResponse{Data: posts, Paging: paging}
+
+	jsonData, err := json.Marshal(resp)
+	if err != nil {
+		return c.JSON(500, err.Error())
+	}
+
+
+	err = p.cache.Set(c.Request().Context(), fmt.Sprint(userId)+":"+cursor, string(jsonData), 2 * 60 * time.Second).Err()
+
+	if err != nil {
+		return c.JSON(500, "")
+	}
+
+	return c.JSON(200, resp)
 }

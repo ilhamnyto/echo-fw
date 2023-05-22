@@ -1,6 +1,11 @@
 package controller
 
 import (
+	"encoding/json"
+	"fmt"
+	"time"
+
+	"github.com/go-redis/redis/v8"
 	"github.com/ilhamnyto/echo-fw/entity"
 	"github.com/ilhamnyto/echo-fw/services"
 	"github.com/labstack/echo/v4"
@@ -8,10 +13,11 @@ import (
 
 type UserController struct {
 	service 	services.InterfaceUserService
+	cache *redis.Client
 }
 
-func NewUserController(service services.InterfaceUserService) *UserController {
-	return &UserController{service: service}
+func NewUserController(service services.InterfaceUserService, redis *redis.Client) *UserController {
+	return &UserController{service: service, cache: redis}
 }
 
 func (u *UserController) CreateUser(c echo.Context) error {
@@ -91,6 +97,23 @@ func (u *UserController) SearchUser(c echo.Context) error {
 
 func (u *UserController) UserProfile(c echo.Context) error {
 	userId := c.Get("user_id").(int)
+
+	result, err := u.cache.Get(c.Request().Context(), fmt.Sprint(userId)).Result()
+
+	if err == nil {
+		
+		var dr entity.DataResponse
+
+		err := json.Unmarshal([]byte(result), &dr)
+
+		if err != nil {
+			return c.JSON(500, err.Error())
+		}
+
+		return c.JSON(200, dr)
+
+	}
+
 	userData, custErr := u.service.GetProfile(userId)
 
 	if custErr != nil {
@@ -98,6 +121,18 @@ func (u *UserController) UserProfile(c echo.Context) error {
 	}
 
 	resp := entity.DataResponse{Data: userData}
+
+	jsonData, err := json.Marshal(resp)
+	if err != nil {
+		return c.JSON(500, err.Error())
+	}
+
+
+	err = u.cache.Set(c.Request().Context(), fmt.Sprint(userId), string(jsonData), 2 * 60 * time.Second).Err()
+
+	if err != nil {
+		return c.JSON(500, "")
+	}
 
 	return c.JSON(200, resp)
 }

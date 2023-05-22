@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strconv"
+)
 
 const (
 	POSTGRES_HOST     = "POSTGRES_HOST"
@@ -8,8 +11,24 @@ const (
 	POSTGRES_USER     = "POSTGRES_USER"
 	POSTGRES_PASSWORD = "POSTGRES_PASSWORD"
 	POSTGRES_DB       = "POSTGRES_DB"
+	REDIS_HOST		  = "REDIS_HOST"
+	REDIS_PORT 		  =	"REDIS_PORT"	
+	REDIS_DB 		  =	"REDIS_DB"	
+	REDIS_PASSWORD 	  =	"REDIS_PASSWORD"	
 )
 
 func GetString(key string) string {
 	return os.Getenv(key)
+}
+
+func GetInt(key string) int {
+	str := os.Getenv(key)
+
+	num, err := strconv.Atoi(str)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return num
 }
