@@ -18,6 +18,7 @@ func main() {
 	config.LoadConfig(".env")
 
 	db := database.ConnectDB()
+	database.MigrateDB(db.DbSQL)
 	redis := cache.ConnectRedis()
 
 	e := echo.New()
